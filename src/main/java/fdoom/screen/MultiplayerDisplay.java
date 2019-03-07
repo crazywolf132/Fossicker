@@ -7,7 +7,7 @@ import fdoom.core.Game;
 import fdoom.core.io.InputHandler;
 import fdoom.gfx.*;
 import fdoom.gfx.Ellipsis.SequentialEllipsis;
-import fdoom.network.MinicraftClient;
+import fdoom.network.GameClient;
 import fdoom.saveload.Save;
 import fdoom.screen.entry.RangeEntry;
 
@@ -35,7 +35,7 @@ public class MultiplayerDisplay extends Display {
 	private String typing = email;
 	private boolean inputIsValid = false;
 	
-	private final RangeEntry connectTimeout = new RangeEntry("Timeout (sec) (0=none)", 0, 120, (int)Math.ceil(MinicraftClient.DEFAULT_CONNECT_TIMEOUT/1000f));
+	private final RangeEntry connectTimeout = new RangeEntry("Timeout (sec) (0=none)", 0, 120, (int)Math.ceil(GameClient.DEFAULT_CONNECT_TIMEOUT/1000f));
 	
 	private boolean online = false;
 	private boolean typingEmail = true;
@@ -67,7 +67,7 @@ public class MultiplayerDisplay extends Display {
 		contactAccountServer(() -> {
 			if(curState == State.ENTERIP) { // login was automatic
 				setWaitMessage("connecting to server");
-				Game.client = new MinicraftClient(savedUsername,this, ipAddress);
+				Game.client = new GameClient(savedUsername,this, ipAddress);
 			} else
 				savedIP = ipAddress; // must login manually, so the ip address is saved for now.
 		});
@@ -161,7 +161,7 @@ public class MultiplayerDisplay extends Display {
 					setWaitMessage("connecting to server");
 					savedIP = typing;
 					new Thread(() -> {
-						Game.client = new MinicraftClient(savedUsername, this, typing, connectTimeout.getValue()*1000); // typing = ipAddress
+						Game.client = new GameClient(savedUsername, this, typing, connectTimeout.getValue()*1000); // typing = ipAddress
 						if(Game.client.isConnected())
 							new Save(); // write the saved ip to file
 						typing = "";

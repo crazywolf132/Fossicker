@@ -42,7 +42,7 @@ import fdoom.screen.WorldSelectDisplay;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MinicraftServer extends Thread implements MinicraftProtocol {
+public class GameServer extends Thread implements GameProtocol {
 	
 	class MyTask extends TimerTask {
 		public MyTask() {}
@@ -51,7 +51,7 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 	
 	private static final int UPDATE_INTERVAL = 10; // measured in seconds
 	
-	private List<MinicraftServerThread> threadList = Collections.synchronizedList(new ArrayList<>());
+	private List<GameServerThread> threadList = Collections.synchronizedList(new ArrayList<>());
 	private ServerSocket socket;
 	
 	private RemotePlayer hostPlayer = null;
@@ -59,8 +59,8 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 	
 	private int playerCap = 5;
 	
-	public MinicraftServer() {
-		super("MinicraftServer");
+	public GameServer() {
+		super("GameServer");
 		Game.ISONLINE = true;
 		Game.ISHOST = true; // just in case.
 		Game.player.remove(); // the server has no player...
@@ -89,7 +89,7 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 		
 		try {
 			while (socket != null) {
-				MinicraftServerThread mst = new MinicraftServerThread(socket.accept(), this);
+				GameServerThread mst = new GameServerThread(socket.accept(), this);
 				if(mst.isConnected())
 					threadList.add(mst);
 			}
@@ -119,13 +119,13 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 	
 	public int getNumPlayers() { return threadList.size(); }
 	
-	private MinicraftServerThread[] getThreads() {
-		return threadList.toArray(new MinicraftServerThread[threadList.size()]);
+	private GameServerThread[] getThreads() {
+		return threadList.toArray(new GameServerThread[threadList.size()]);
 	}
 	
 	public String[] getClientInfo() {
 		List<String> playerStrings = new ArrayList<>();
-		for(MinicraftServerThread serverThread: getThreads()) {
+		for(GameServerThread serverThread: getThreads()) {
 			RemotePlayer clientPlayer = serverThread.getClient();
 			/*if(clientPlayer.getUsername().length() == 0) {
 				if(Game.debug) System.out.println("SERVER: client player " + clientPlayer + " has no username; not " +
@@ -146,7 +146,7 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 	}
 	public List<RemotePlayer> getPlayersInRange(Level level, int xt, int yt, boolean useTrackRange) {
 		List<RemotePlayer> players = new ArrayList<>();
-		for(MinicraftServerThread thread: getThreads()) {
+		for(GameServerThread thread: getThreads()) {
 			RemotePlayer rp = thread.getClient();
 			if(useTrackRange && rp.shouldTrack(xt, yt, level) || !useTrackRange && rp.shouldSync(xt, yt, level))
 				players.add(rp);
@@ -161,7 +161,7 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 			return (RemotePlayer) e;
 			// this method is only used to remove a player from an array, so it is probably better that is doesn't check...
 			/*RemotePlayer given = (RemotePlayer) e;
-			MinicraftServerThread filed = getAssociatedThread(given);
+			GameServerThread filed = getAssociatedThread(given);
 			if(!filed.isValid()) {
 				System.err.println("SERVER encountered a RemotePlayer not matched in the thread list: " + given);
 				return null;
@@ -173,10 +173,10 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 	}
 	
 	@Nullable
-	public MinicraftServerThread getAssociatedThread(String username) {
-		MinicraftServerThread match = null;
+	public GameServerThread getAssociatedThread(String username) {
+		GameServerThread match = null;
 		
-		for(MinicraftServerThread thread: getThreads()) {
+		for(GameServerThread thread: getThreads()) {
 			if(thread.getClient().getUsername().equalsIgnoreCase(username)) {
 				match = thread;
 				break;
@@ -186,11 +186,11 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 		return match;
 	}
 	
-	public List<MinicraftServerThread> getAssociatedThreads(String[] usernames) { return getAssociatedThreads(usernames, false); }
-	public List<MinicraftServerThread> getAssociatedThreads(String[] usernames, boolean printError) {
-		List<MinicraftServerThread> threads = new ArrayList<>();
+	public List<GameServerThread> getAssociatedThreads(String[] usernames) { return getAssociatedThreads(usernames, false); }
+	public List<GameServerThread> getAssociatedThreads(String[] usernames, boolean printError) {
+		List<GameServerThread> threads = new ArrayList<>();
 		for(String username: usernames) {
-			MinicraftServerThread match = getAssociatedThread(username);
+			GameServerThread match = getAssociatedThread(username);
 			if(match != null)
 				threads.add(match);
 			else if(printError)
@@ -201,10 +201,10 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 	}
 	
 	@NotNull
-	public MinicraftServerThread getAssociatedThread(RemotePlayer player) {
-		MinicraftServerThread thread = null;
+	public GameServerThread getAssociatedThread(RemotePlayer player) {
+		GameServerThread thread = null;
 		
-		for(MinicraftServerThread curThread: getThreads()) {
+		for(GameServerThread curThread: getThreads()) {
 			if(curThread.getClient() == player) {
 				thread = curThread;
 				break;
@@ -214,18 +214,18 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 		if(thread == null) {
 			System.err.println("SERVER could not find thread for remote player " + player/* + "; stack trace:"*/);
 			//Thread.dumpStack();
-			thread = new MinicraftServerThread(player, this);
+			thread = new GameServerThread(player, this);
 		}
 		
 		return thread;
 	}
 	
-	private List<MinicraftServerThread> getAssociatedThreads(List<RemotePlayer> players) {
-		List<MinicraftServerThread> threads = new ArrayList<>();
+	private List<GameServerThread> getAssociatedThreads(List<RemotePlayer> players) {
+		List<GameServerThread> threads = new ArrayList<>();
 		
 		/// NOTE I could do this the other way around, by looping though the thread list, and adding those whose player is found in the given list, which might be slightly more optimal... but I think it's better that this tells you when a player in the list doesn't have a matching thread.
 		for(RemotePlayer client: players) {
-			MinicraftServerThread thread = getAssociatedThread(client);
+			GameServerThread thread = getAssociatedThread(client);
 			if(thread.isValid())
 				threads.add(thread);
 			else
@@ -248,7 +248,7 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 			//if(Game.debug && e instanceof Player) System.out.println("Server removed player "+e+" of update: " + removed);
 		}
 		
-		for(MinicraftServerThread thread: getAssociatedThreads(players)) {
+		for(GameServerThread thread: getAssociatedThreads(players)) {
 			thread.sendEntityUpdate(e, e.getUpdates());
 		}
 		
@@ -270,7 +270,7 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 			players.remove(getIfPlayer(e)); // if "e" is a player, this removes it from the list.
 		int cnt = 0;
 		if(Game.debug && e instanceof Player) System.out.println("SERVER: broadcasting player addition of "+e);
-		for(MinicraftServerThread thread: getAssociatedThreads(players)) {
+		for(GameServerThread thread: getAssociatedThreads(players)) {
 			thread.sendEntityAddition(e);
 			cnt++;
 		}
@@ -303,14 +303,14 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 			return;
 		}
 		
-		for(MinicraftServerThread thread: getAssociatedThreads(players))
+		for(GameServerThread thread: getAssociatedThreads(players))
 			thread.sendEntityRemoval(e.eid, level.depth);
 	}
 	// remove regardless of level
 	public void broadcastEntityRemoval(Entity e, boolean removeSelf) {
 		List<RemotePlayer> players = getPlayersToRemove(e, removeSelf);
 		
-		for(MinicraftServerThread thread: getAssociatedThreads(players))
+		for(GameServerThread thread: getAssociatedThreads(players))
 			thread.sendEntityRemoval(e.eid);
 	}
 	
@@ -325,15 +325,15 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 	}
 	
 	public void broadcastPlayerHurt(int eid, int damage, Direction attackDir) {
-		for(MinicraftServerThread thread: getThreads())
+		for(GameServerThread thread: getThreads())
 			thread.sendPlayerHurt(eid, damage, attackDir);
 	}
 	
 	public void updateGameVars() { updateGameVars(getThreads()); }
-	public void updateGameVars(MinicraftServerThread sendTo) {
-		updateGameVars(new MinicraftServerThread[] {sendTo});
+	public void updateGameVars(GameServerThread sendTo) {
+		updateGameVars(new GameServerThread[] {sendTo});
 	}
-	public void updateGameVars(MinicraftServerThread[] sendTo) {
+	public void updateGameVars(GameServerThread[] sendTo) {
 		//if (Game.debug) System.out.println("SERVER: updating game vars...");
 		if(sendTo.length == 0) return;
 		
@@ -349,13 +349,13 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 		
 		String vars = String.join(";", varArray);
 		
-		for(MinicraftServerThread thread: sendTo)
+		for(GameServerThread thread: sendTo)
 			thread.sendData(InputType.GAME, vars);
 	}
 	
 	public void pingClients() {
 		System.out.println("pinging clients ("+threadList.size()+" connected)...");
-		for(MinicraftServerThread thread: getThreads())
+		for(GameServerThread thread: getThreads())
 			thread.doPing();
 	}
 	
@@ -370,7 +370,7 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 		return clientSaves;
 	}
 	
-	boolean parsePacket(MinicraftServerThread serverThread, InputType inType, String alldata) {
+	boolean parsePacket(GameServerThread serverThread, InputType inType, String alldata) {
 		String[] data = alldata.split(";");
 		
 		//if (Game.debug) System.out.println("received packet");
@@ -805,20 +805,20 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 	}
 	
 	private void broadcastData(InputType inType, String data) {
-		broadcastData(inType, data, (MinicraftServerThread)null);
+		broadcastData(inType, data, (GameServerThread)null);
 	}
-	private void broadcastData(InputType inType, String data, @Nullable MinicraftServerThread clientThreadToExclude) {
-		for(MinicraftServerThread thread: getThreads()) {
+	private void broadcastData(InputType inType, String data, @Nullable GameServerThread clientThreadToExclude) {
+		for(GameServerThread thread: getThreads()) {
 			if(thread != clientThreadToExclude) // send this packet to all EXCEPT the specified one.
 				thread.sendData(inType, data);
 		}
 	}
-	private void broadcastData(InputType inType, String data, List<MinicraftServerThread> threads) {
-		for(MinicraftServerThread thread: threads)
+	private void broadcastData(InputType inType, String data, List<GameServerThread> threads) {
+		for(GameServerThread thread: threads)
 			thread.sendData(inType, data);
 	}
 	
-	protected synchronized void onThreadDisconnect(MinicraftServerThread thread) {
+	protected synchronized void onThreadDisconnect(GameServerThread thread) {
 		threadList.remove(thread);
 		if(thread.getClient() == hostPlayer)
 			hostPlayer = null;
@@ -834,8 +834,8 @@ public class MinicraftServer extends Thread implements MinicraftProtocol {
 			broadcastData(InputType.SAVE, "");
 			MyUtils.sleep(1000); // give time for the clients to send back their player data
 			
-			MinicraftServerThread[] threads = getThreads();
-			for(MinicraftServerThread thread: threads)
+			GameServerThread[] threads = getThreads();
+			for(GameServerThread thread: threads)
 				thread.endConnection();
 		}
 		

@@ -8,7 +8,7 @@ import java.util.Random;
 
 import fdoom.entity.Entity;
 import fdoom.level.Level;
-import fdoom.network.MinicraftServer;
+import fdoom.network.GameServer;
 import fdoom.saveload.Load;
 import fdoom.screen.LoadingDisplay;
 import fdoom.screen.WorldSelectDisplay;
@@ -154,7 +154,7 @@ public class Network extends Game {
 			setMenu(new LoadingDisplay()); // gets things going to load up a (server) world
 		
 		// now that that's done, let's turn *this* running JVM into a server:
-		server = new MinicraftServer();
+		server = new GameServer();
 		
 		new Load(WorldSelectDisplay.getWorldName(), server); // load server config
 		

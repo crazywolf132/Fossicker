@@ -35,7 +35,7 @@ import fdoom.item.Inventory;
 import fdoom.item.Item;
 import fdoom.item.PotionType;
 import fdoom.item.StackableItem;
-import fdoom.network.MinicraftServer;
+import fdoom.network.GameServer;
 import fdoom.screen.LoadingDisplay;
 import fdoom.screen.MultiplayerDisplay;
 import fdoom.screen.WorldSelectDisplay;
@@ -103,7 +103,7 @@ public class Save {
 	}
 	
 	/// this saves server config options
-	public Save(String worldname, MinicraftServer server) {
+	public Save(String worldname, GameServer server) {
 		this(new File(Game.gameDir+"/saves/" + worldname + "/"));
 		
 		if (Game.debug) System.out.println("writing server config...");
@@ -202,7 +202,7 @@ public class Save {
 		writeToFile(location + "Unlocks" + extension, data);
 	}
 	
-	private void writeServerConfig(String filename, MinicraftServer server) {
+	private void writeServerConfig(String filename, GameServer server) {
 		data.add(String.valueOf(server.getPlayerCap()));
 		//data.add(String.join(":", server.getOpNames().toArray(new String[0])));
 		

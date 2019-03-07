@@ -13,13 +13,13 @@ import fdoom.item.PotionType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class MinicraftConnection extends Thread implements MinicraftProtocol {
+public abstract class GameConnection extends Thread implements GameProtocol {
 	
 	private PrintWriter out;
 	private BufferedReader in;
 	private Socket socket = null;
 	
-	protected MinicraftConnection(String threadName, @Nullable Socket socket) {
+	protected GameConnection(String threadName, @Nullable Socket socket) {
 		super(threadName);
 		this.socket = socket;
 		
@@ -68,7 +68,7 @@ public abstract class MinicraftConnection extends Thread implements MinicraftPro
 				
 				//if (Game.debug) System.out.println(this + " completed data packet: " + currentData);
 				
-				InputType inType = MinicraftProtocol.getInputType(currentData.charAt(0));
+				InputType inType = GameProtocol.getInputType(currentData.charAt(0));
 				
 				if(inType == null)
 					System.err.println("SERVER: invalid packet received; input type is not valid.");

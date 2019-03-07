@@ -15,8 +15,8 @@ import fdoom.core.io.Sound;
 import fdoom.entity.mob.Player;
 import fdoom.level.Level;
 import fdoom.level.tile.Tiles;
-import fdoom.network.MinicraftClient;
-import fdoom.network.MinicraftServer;
+import fdoom.network.GameClient;
+import fdoom.network.GameServer;
 import fdoom.saveload.Load;
 import fdoom.saveload.Version;
 import fdoom.screen.Display;
@@ -62,11 +62,11 @@ public class Game {
 	public static boolean ISONLINE = false;
 	public static boolean ISHOST = false;
 	
-	public static MinicraftClient client = null;
+	public static GameClient client = null;
 	public static boolean isValidClient() { return ISONLINE && client != null; }
 	public static boolean isConnectedClient() { return isValidClient() && client.isConnected(); }
 	
-	public static MinicraftServer server = null;
+	public static GameServer server = null;
 	public static boolean isValidServer() { return ISONLINE && ISHOST && server != null; }
 	public static boolean hasConnectedClients() { return isValidServer() && server.hasClients(); }
 	

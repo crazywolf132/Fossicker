@@ -17,7 +17,7 @@ import fdoom.entity.mob.Player;
 import fdoom.entity.mob.RemotePlayer;
 import fdoom.gfx.Rectangle;
 import fdoom.level.Level;
-import fdoom.network.MinicraftServerThread;
+import fdoom.network.GameServerThread;
 import fdoom.saveload.Save;
 import fdoom.screen.WorldSelectDisplay;
 
@@ -226,7 +226,7 @@ public class ConsoleReader extends Thread {
 				}
 				
 				String message = args[args.length-1];
-				for(MinicraftServerThread clientThread: Game.server.getAssociatedThreads(usernames.toArray(new String[usernames.size()]), true))
+				for(GameServerThread clientThread: Game.server.getAssociatedThreads(usernames.toArray(new String[usernames.size()]), true))
 					clientThread.sendNotification(message, 50);
 			}
 		},
@@ -239,7 +239,7 @@ public class ConsoleReader extends Thread {
 					printHelp(this);
 					return;
 				}
-				MinicraftServerThread clientThread = Game.server.getAssociatedThread(args[0]);
+				GameServerThread clientThread = Game.server.getAssociatedThread(args[0]);
 				if(clientThread == null) {
 					System.out.println("could not find player with username \"" + args[0] + "\"");
 					return;
@@ -272,7 +272,7 @@ public class ConsoleReader extends Thread {
 					}
 				} else {
 					// user specified the username of another player to tp to.
-					MinicraftServerThread destClientThread = Game.server.getAssociatedThread(args[1]);
+					GameServerThread destClientThread = Game.server.getAssociatedThread(args[1]);
 					if(destClientThread == null) {
 						System.out.println("could not find player with username \"" + args[0] + "\" for tp destination.");
 						return;
@@ -393,7 +393,7 @@ public class ConsoleReader extends Thread {
 			
 			if(args.length == 1) {
 				// must be player name
-				MinicraftServerThread thread = Game.server.getAssociatedThread(args[0]);
+				GameServerThread thread = Game.server.getAssociatedThread(args[0]);
 				if(thread != null)
 					matches.add(thread.getClient());
 				return matches;
@@ -424,7 +424,7 @@ public class ConsoleReader extends Thread {
 			
 			if(args.length == 3) {
 				// @_ playername radius
-				MinicraftServerThread thread = Game.server.getAssociatedThread(args[1]);
+				GameServerThread thread = Game.server.getAssociatedThread(args[1]);
 				RemotePlayer rp = thread == null ? null : thread.getClient();
 				if(rp == null) {
 					System.out.println("invalid entity targeting format: remote player does not exist: " + args[1]);

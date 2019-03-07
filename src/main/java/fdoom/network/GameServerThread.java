@@ -25,7 +25,7 @@ import fdoom.saveload.Load;
 import fdoom.saveload.Save;
 import fdoom.saveload.Version;
 
-public class MinicraftServerThread extends MinicraftConnection {
+public class GameServerThread extends GameConnection {
 	
 	private static final String autoPing = "ping";
 	private static final String manualPing = "manual";
@@ -34,7 +34,7 @@ public class MinicraftServerThread extends MinicraftConnection {
 	private static final int PING_INTERVAL = 1_000; // measured in milliseconds
 	
 	
-	private MinicraftServer serverInstance;
+	private GameServer serverInstance;
 	private RemotePlayer client;
 	
 	/// PING
@@ -52,7 +52,7 @@ public class MinicraftServerThread extends MinicraftConnection {
 	
 	private final boolean valid;
 	
-	MinicraftServerThread(Socket socket, MinicraftServer serverInstance) {
+	GameServerThread(Socket socket, GameServer serverInstance) {
 		super("FDServerThread", socket);
 		valid = true;
 		
@@ -101,7 +101,7 @@ public class MinicraftServerThread extends MinicraftConnection {
 	}
 	
 	// this is to be a dummy thread.
-	MinicraftServerThread(RemotePlayer player, MinicraftServer server) {
+	GameServerThread(RemotePlayer player, GameServer server) {
 		super("FDServerThread", null);
 		valid = false;
 		this.client = player;

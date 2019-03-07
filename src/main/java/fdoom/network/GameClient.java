@@ -39,7 +39,7 @@ import fdoom.screen.MultiplayerDisplay;
 import org.jetbrains.annotations.Nullable;
 
 /// This class is only used by the client runtime; the server runtime doesn't touch it.
-public class MinicraftClient extends MinicraftConnection {
+public class GameClient extends GameConnection {
 	
 	public static final int DEFAULT_CONNECT_TIMEOUT = 5_000; // in milliseconds
 	
@@ -87,8 +87,8 @@ public class MinicraftClient extends MinicraftConnection {
 		return socket;
 	}
 	
-	public MinicraftClient(String username, MultiplayerDisplay menu, String hostName) { this(username, menu, hostName, DEFAULT_CONNECT_TIMEOUT); }
-	public MinicraftClient(String username, MultiplayerDisplay menu, String hostName, int connectTimeout) {
+	public GameClient(String username, MultiplayerDisplay menu, String hostName) { this(username, menu, hostName, DEFAULT_CONNECT_TIMEOUT); }
+	public GameClient(String username, MultiplayerDisplay menu, String hostName, int connectTimeout) {
 		super("FDClient", openSocket(hostName, menu, connectTimeout));
 		this.menu = menu;
 		Game.ISONLINE = true;

@@ -27,6 +27,7 @@ import fdoom.item.*;
 import fdoom.level.Level;
 import fdoom.level.tile.Tile;
 import fdoom.level.tile.Tiles;
+import fdoom.network.GameServerThread;
 import fdoom.saveload.Save;
 import fdoom.screen.*;
 
@@ -570,7 +571,7 @@ public class Player extends Mob implements ItemHolder, ClientTickable {
 				}
 				
 				if(Game.isValidServer() && this instanceof RemotePlayer) {// only do this if no interaction was actually made; b/c a tile update packet will generally happen then anyway.
-					fdoom.network.MinicraftServerThread thread = Game.server.getAssociatedThread((RemotePlayer)this);
+					GameServerThread thread = Game.server.getAssociatedThread((RemotePlayer)this);
 					//if(thread != null)
 						thread.sendTileUpdate(level, t.x, t.y); /// FIXME this part is as a semi-temporary fix for those odd tiles that don't update when they should; instead of having to make another system like the entity additions and removals (and it wouldn't quite work as well for this anyway), this will just update whatever tile the player interacts with (and fails, since a successful interaction changes the tile and therefore updates it anyway).
 				}

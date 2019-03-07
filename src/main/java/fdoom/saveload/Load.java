@@ -29,7 +29,7 @@ import fdoom.entity.particle.TextParticle;
 import fdoom.item.*;
 import fdoom.level.Level;
 import fdoom.level.tile.Tiles;
-import fdoom.network.MinicraftServer;
+import fdoom.network.GameServer;
 import fdoom.screen.LoadingDisplay;
 import fdoom.screen.MultiplayerDisplay;
 
@@ -89,7 +89,7 @@ public class Load {
 		}
 	}
 	
-	public Load(String worldname, MinicraftServer server) {
+	public Load(String worldname, GameServer server) {
 		location += "/saves/"+worldname+"/";
 		File testFile = new File(location + "ServerConfig" + extension);
 		if(testFile.exists())
@@ -291,7 +291,7 @@ public class Load {
 		}
 	}
 	
-	private void loadServerConfig(String filename, MinicraftServer server) {
+	private void loadServerConfig(String filename, GameServer server) {
 		loadFromFile(location + filename + extension);
 		
 		server.setPlayerCap(Integer.parseInt(data.get(0)));
