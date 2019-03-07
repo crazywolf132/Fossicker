@@ -8,6 +8,9 @@ public class Game {
 
     Game() {}
 
+    public static boolean HAS_GUI = true;
+    public static boolean devMode = true;
+
     static boolean running = true;
 
     public static void quit() {
