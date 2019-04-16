@@ -61,14 +61,12 @@ public class TallGrassTile extends Tile {
 					default:
 						level.setTile(xt, yt, Tiles.get(41));
 				}
-				//level.setTile(xt, yt, Tiles.get((39 + this.lifeStage)));
 			}
 		}
 	}
 
 	@Override
 	public boolean hurt(Level level, int x, int y, Mob source, int dmg, Direction attackDir) {
-		System.err.println("THE LIFE STAGE IS: " + this.lifeStage);
 		level.setTile(x, y, Tiles.get("grass"));
 		Sound.monsterHurt.play();
 		if (random.nextInt(4) == 0) {
@@ -82,6 +80,6 @@ public class TallGrassTile extends Tile {
 
 	@Override
 	public boolean mayPass(Level level, int x, int y, Entity e) {
-		return lifeStage == 2 ? false : true;
+		return this.lifeStage != 2;
 	}
 }
