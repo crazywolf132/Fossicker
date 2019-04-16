@@ -449,11 +449,7 @@ public class Player extends Mob implements ItemHolder, ClientTickable {
 			}
 
 			if (input.getKey("night").clicked) {
-				if (Updater.getTime() == Updater.Time.Night) {
-					Updater.changeTimeOfDay(Updater.Time.Morning);
-				} else {
-					Updater.changeTimeOfDay(Updater.Time.Night);
-				}
+				Updater.changeTimeOfDay(Updater.Time.Night);
 			}
 
 			//debug feature:

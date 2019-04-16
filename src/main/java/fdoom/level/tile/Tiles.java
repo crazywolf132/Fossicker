@@ -57,9 +57,9 @@ public final class Tiles {
 		tiles.set(36, new QuickSandTile("Quick Sand"));
 		tiles.set(37, new SnowTile("Snow"));
 		tiles.set(38, new SnowTreeTile("Snow Tree"));
-		tiles.set(39, new TallGrassTile("Small Grass", Tiles.get("grass")));
-		tiles.set(40, new TallGrassTile("Medium Grass", Tiles.get("grass")));
-		tiles.set(41, new TallGrassTile("Tall Grass", Tiles.get("grass")));
+		tiles.set(39, new TallGrassTile("Small Grass", Tiles.get("grass"), 0));
+		tiles.set(40, new TallGrassTile("Medium Grass", Tiles.get("grass"), 1));
+		tiles.set(41, new TallGrassTile("Tall Grass", Tiles.get("grass"), 2));
 		tiles.set(42, new PumpkinTile("pumpkin", false));
 		tiles.set(43, new GraveStoneTile("Grave stone", false));
 		tiles.set(44, new GraveStoneTile("Broken Grave Stone", true));

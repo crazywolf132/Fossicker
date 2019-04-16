@@ -5,10 +5,12 @@ import fdoom.entity.Direction;
 import fdoom.entity.Entity;
 import fdoom.entity.mob.Mob;
 import fdoom.entity.mob.MobAi;
+import fdoom.entity.mob.Player;
 import fdoom.entity.mob.Zombie;
 import fdoom.gfx.Color;
 import fdoom.gfx.Screen;
 import fdoom.gfx.Sprite;
+import fdoom.item.Item;
 import fdoom.level.Level;
 
 public class GraveStoneTile extends Tile {
@@ -76,9 +78,22 @@ public class GraveStoneTile extends Tile {
         return isBroken ? 2 : 0;
     }
 
+    public boolean interact(Level level, int xt, int yt, Player player, Item item, Direction attackDir) {
+        if (!this.isBroken) {
+            level.add(new Zombie(5));
+            level.setTile(xt, yt, Tiles.get(44));
+            Updater.changeTimeOfDay(Updater.Time.Evening);
+        }
+        return false;
+    }
+
     @Override
     public boolean hurt(Level level, int x, int y, Mob source, int dmg, Direction attackDir) {
-        level.add(new Zombie(1));
+        if (!this.isBroken) {
+            level.add(new Zombie(1));
+            level.setTile(x, y, Tiles.get(44));
+            Updater.changeTimeOfDay(Updater.Time.Evening);
+        }
         return true;
     }
 

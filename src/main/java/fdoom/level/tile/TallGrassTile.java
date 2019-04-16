@@ -14,17 +14,19 @@ import fdoom.level.Level;
 
 public class TallGrassTile extends Tile {
 
-	private static Sprite small = new Sprite(30, 8, 2, 2, Color.get(-1, 30, 40, -1), 0);
-	private static Sprite medium = new Sprite(28, 8, 2, 2, Color.get(-1, 30, 40, -1), 0);
+	private static Sprite small = new Sprite(28, 8, 2, 2, Color.get(-1, 30, 40, -1), 0);
+	private static Sprite medium = new Sprite(30, 8, 2, 2, Color.get(-1, 30, 40, -1), 0);
 	private static Sprite tall = new Sprite(26, 8, 2, 2, Color.get(-1, 30, 40, -1), 0);
 
 	private Tile onType;
-	private int lifeStage = 0;
+	private int lifeStage;
 
-	protected TallGrassTile(String name, Tile onType) {
+	protected TallGrassTile(String name, Tile onType, int lifeStage) {
 		super(name, small);
 		connectsToGrass = true;
+		this.lifeStage = lifeStage;
 		this.onType = onType;
+
 		connectsToSand = onType.connectsToSand;
 		connectsToGrass = onType.connectsToGrass;
 		connectsToSnow = onType.connectsToSnow;
@@ -48,30 +50,25 @@ public class TallGrassTile extends Tile {
 		}
 	}
 
-	public boolean interact(Level level, int xt, int yt, Player player, Item item, Direction attackDir) {
-		System.err.println(System.currentTimeMillis());
-		if (player.payStamina(3)) {
-			level.setTile(xt, yt, Tiles.get("grass"));
-			Sound.monsterHurt.play();
-			if (random.nextInt(5) == 0) {
-				level.dropItem(xt* 16 + 8, yt * 16 + 8, 2, Items.get("Grass Fibers"));
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public void tick(Level level, int xt, int yt) {
-		if (this.lifeStage != 2) {
-			if (random.nextInt((10 - 1) + 1) + 1 == 4) {
-				this.lifeStage++;
+		if (this.lifeStage < 2) {
+			if (random.nextInt(10) == 4){
+				switch(this.lifeStage) {
+					case 0:
+						level.setTile(xt, yt, Tiles.get(40));
+						break;
+					case 1:
+					default:
+						level.setTile(xt, yt, Tiles.get(41));
+				}
+				//level.setTile(xt, yt, Tiles.get((39 + this.lifeStage)));
 			}
 		}
 	}
 
 	@Override
 	public boolean hurt(Level level, int x, int y, Mob source, int dmg, Direction attackDir) {
-		System.err.println(System.currentTimeMillis());
+		System.err.println("THE LIFE STAGE IS: " + this.lifeStage);
 		level.setTile(x, y, Tiles.get("grass"));
 		Sound.monsterHurt.play();
 		if (random.nextInt(4) == 0) {

@@ -33,28 +33,28 @@ public class Network extends Game {
 	public static VersionInfo getLatestVersion() { return latestVersion; }
 	
 	
-	public static void findLatestVersion(Action callback) {
-		new Thread(() -> {
-			// fetch the latest version from github
-			if(debug) System.out.println("fetching release list from github...");
-			try {
-				HttpResponse<JsonNode> response = Unirest.get("https://api.github.com/repos/chrisj42/fdoom-plus-revived/releases").asJson();
-				if(response.getStatus() != 200) {
-					System.err.println("version request returned status code "+response.getStatus()+": "+response.getStatusText());
-					System.err.println("response body: "+response.getBody());
-					latestVersion = new VersionInfo(VERSION, "", "");
-				}
-				else {
-					latestVersion = new VersionInfo(response.getBody().getArray().getJSONObject(0));
-				}
-			} catch(UnirestException e) {
-				e.printStackTrace();
-				latestVersion = new VersionInfo(VERSION, "", "");
-			}
-			
-			callback.act(); // finished.
-		}).start();
-	}
+//	public static void findLatestVersion(Action callback) {
+//		new Thread(() -> {
+//			// fetch the latest version from github
+//			if(debug) System.out.println("fetching release list from github...");
+//			try {
+//				HttpResponse<JsonNode> response = Unirest.get("https://api.github.com/repos/chrisj42/fdoom-plus-revived/releases").asJson();
+//				if(response.getStatus() != 200) {
+//					System.err.println("version request returned status code "+response.getStatus()+": "+response.getStatusText());
+//					System.err.println("response body: "+response.getBody());
+//					latestVersion = new VersionInfo(VERSION, "", "");
+//				}
+//				else {
+//					latestVersion = new VersionInfo(response.getBody().getArray().getJSONObject(0));
+//				}
+//			} catch(UnirestException e) {
+//				e.printStackTrace();
+//				latestVersion = new VersionInfo(VERSION, "", "");
+//			}
+//
+//			callback.act(); // finished.
+//		}).start();
+//	}
 	
 	@Nullable
 	public static Entity getEntity(int eid) {
@@ -158,17 +158,17 @@ public class Network extends Game {
 		
 		new Load(WorldSelectDisplay.getWorldName(), server); // load server config
 		
-		if(latestVersion == null) {
-			System.out.println("VERSIONCHECK: Checking for updates...");
-			findLatestVersion(() -> {
-				if(latestVersion.version.compareTo(Game.VERSION) > 0) // link new version
-					System.out.println("VERSIONCHECK: Found newer version: Version " + latestVersion.releaseName + " Available! Download direct from \""+latestVersion.releaseUrl +"\". Can also be found with change log at \"https://www.github.com/chrisj42/fdoom-plus-revived/releases\".");
-				else if(latestVersion.releaseName.length() > 0)
-					System.out.println("VERSIONCHECK: No updates found, you have the latest version.");
-				else
-					System.out.println("VERSIONCHECK: Connection failed, could not check for updates.");
-			});
-		}
+//		if(latestVersion == null) {
+//			System.out.println("VERSIONCHECK: Checking for updates...");
+//			findLatestVersion(() -> {
+//				if(latestVersion.version.compareTo(Game.VERSION) > 0) // link new version
+//					System.out.println("VERSIONCHECK: Found newer version: Version " + latestVersion.releaseName + " Available! Download direct from \""+latestVersion.releaseUrl +"\". Can also be found with change log at \"https://www.github.com/chrisj42/fdoom-plus-revived/releases\".");
+//				else if(latestVersion.releaseName.length() > 0)
+//					System.out.println("VERSIONCHECK: No updates found, you have the latest version.");
+//				else
+//					System.out.println("VERSIONCHECK: Connection failed, could not check for updates.");
+//			});
+//		}
 		/*Timer t = new Timer(1000, e -> {
 			// meanwhile... the loading screen is about to initialize the world, if this was started from the command line.
 			

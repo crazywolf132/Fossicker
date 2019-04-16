@@ -18,6 +18,7 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'lib', include: ['*.jar'])
+    compile group: 'org.jetbrains', name: 'annotations', version: '16.0.1'
 }
 
 jar {

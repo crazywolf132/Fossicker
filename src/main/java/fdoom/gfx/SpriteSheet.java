@@ -27,7 +27,6 @@ public class SpriteSheet {
 		width = image.getWidth();
 		height = image.getHeight();
 		spriteSize = width / spritePerLine;
-		System.err.println(width / spritePerLine);
 		pixels = image.getRGB(0, 0, width, height, null, 0, width); //gets the color array of the image pixels
 		for (int i = 0; i < pixels.length; i++) { // loops through all the pixels
 			pixels[i] = (pixels[i] & 0xff) / 64; // This sets the pixel value of each color, which determines which of the 4 sprite colors the pixel is set to.

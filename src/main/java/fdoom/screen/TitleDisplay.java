@@ -93,7 +93,7 @@ public class TitleDisplay extends Display {
 	private void checkVersion() {
 		VersionInfo latestVersion = Network.getLatestVersion();
 		if(latestVersion == null) {
-			Network.findLatestVersion(this::checkVersion);
+//			Network.findLatestVersion(this::checkVersion);
 		}
 		else {
 			if(Game.debug) System.out.println("latest version = "+latestVersion.version);
